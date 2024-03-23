@@ -19,8 +19,8 @@ class ExceptionHandler:
         :param exc:
         :return:
         """
-        logger.error(traceback.format_exc())
-        logger.error(exc)
+        logger.exception(traceback.format_exc())
+        logger.exception(exc)
         if isinstance(exc, HTTPException):
             return JSONResponse(
                 content=exc.detail,
