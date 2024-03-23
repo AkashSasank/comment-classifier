@@ -1,5 +1,4 @@
 import numpy as np
-
 from typing import List
 from transformers import AutoConfig, DistilBertTokenizer, \
     DistilBertForSequenceClassification

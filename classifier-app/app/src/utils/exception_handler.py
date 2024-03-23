@@ -1,6 +1,9 @@
+import traceback
+
 from fastapi import status
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException
+from .logger import logger
 
 
 class ExceptionHandler:
@@ -16,6 +19,8 @@ class ExceptionHandler:
         :param exc:
         :return:
         """
+        logger.error(traceback.format_exc())
+        logger.error(exc)
         if isinstance(exc, HTTPException):
             return JSONResponse(
                 content=exc.detail,

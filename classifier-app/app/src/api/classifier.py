@@ -1,13 +1,12 @@
-"""Endpoints for getting version information."""
 import os
-from typing import Union, List, Annotated
-from urllib.parse import urljoin
-
 import requests
+from typing import Union, Annotated
+from urllib.parse import urljoin
 from fastapi import APIRouter, Query
-from ..schemas.classifier import CommentsResponse, Comment, CommentInfo
+from ..schemas.classifier import CommentsResponse, Comment
 from ..utils.classifier import classifier
-
+from .utils import filter_comments, order_comments
+from ..utils.logger import logger
 api_router = APIRouter()
 
 session = requests.Session()
@@ -43,39 +42,6 @@ async def get_comments(subfeddit_id: int,
     filtered_comments = filter_comments(comments, start_time=start_time, end_time=end_time)
     comments = classifier.classify(filtered_comments)
     comments = order_comments(comments, order_by=order_by)
+    logger.log("Hi")
 
     return CommentsResponse(subfeddit_id=subfeddit_id, skip=skip, limit=limit, comments=comments)
-
-
-def filter_comments(comments: List[Comment],
-                    start_time: Union[None, int] = 0,
-                    end_time: Union[None, int] = None
-                    ) -> List[Comment]:
-    """
-    Filter comments based on start time and end time
-    """
-    filtered_comments = comments
-    if start_time and end_time:
-        start_time, end_time = abs(start_time), abs(end_time)
-        if start_time > end_time:
-            start_time, end_time = end_time, start_time
-    if start_time and end_time:
-        filtered_comments = list(filter(lambda x: start_time <= x.created_at <= end_time, comments))
-    if start_time and not end_time:
-        filtered_comments = list(filter(lambda x: start_time <= x.created_at, comments))
-    if not start_time and end_time:
-        filtered_comments = list(filter(lambda x: x.created_at <= end_time, comments))
-    return filtered_comments
-
-
-def order_comments(comments: List[CommentInfo],
-                   order_by: Union[List, None] = None
-                   ) -> List[CommentInfo]:
-    """Sort comments"""
-    if order_by:
-        for i in order_by:
-            if i == "score":
-                comments.sort(key=lambda x: x.score)
-            if i == "-score":
-                comments.sort(key=lambda x: x.score, reverse=True)
-    return comments

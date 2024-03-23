@@ -18,9 +18,11 @@ services:
       - "8000:8000"
     volumes:
       - ./app:/app
+    depends_on:
+      - feddit
 
 
-# Feddit
+  # Feddit
   db:
     image: postgres:15
     environment:

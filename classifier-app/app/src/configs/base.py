@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Dict
 from pydantic import BaseModel, AnyHttpUrl, BaseSettings, validator, PostgresDsn
 
@@ -13,7 +14,9 @@ class LoggingConfig(BaseModel):
 class Settings(BaseSettings):
     PROJECT_NAME: str = 'Classifier APP'
     PROJECT_SLUG: str = 'classifier-app'
-
+    APP_ROOT: str = str(Path(__file__).parent.parent.parent)
+    BASE_DIR: str = str(Path(__file__).parent.parent.parent.parent)
+    LOG_ROOT: str = BASE_DIR
     DEBUG: bool = True
     API_STR: str = "/api/v1"
 
