@@ -1,0 +1,17 @@
+name: Docker Image CI
+
+on:
+# Manual trigger
+  workflow_dispatch:
+    branches: [ "main" ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      run: docker build . --file classifier-app/app/docker/app/Dockerfile --tag comments-classifier:$(date +%s)
+    - name: Test
+      run: pytest
+    - name: Push
+      run: echo "Scripts for repository auth and image push"
