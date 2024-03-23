@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Docker Image CICD
 
 on:
 # Manual trigger
@@ -10,10 +10,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build
-      run: docker build . --file classifier-app/app/docker/app/Dockerfile --tag comments-classifier:$(date +%s)
+      run: tag=$(date +%s) && docker build ./classifier-app/app --file classifier-app/app/docker/app/Dockerfile --tag comments-classifier:$tag --tag comments-classifier:latest
   test:
     runs-on: ubuntu-latest
+    needs: build
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build
-        run: docker run comments-classifier:latest pytest
+        run: docker run -it comments-classifier:latest pytest
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build, test]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy
+        run: docker push comments-classifier:latest
