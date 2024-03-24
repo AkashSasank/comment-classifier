@@ -6,7 +6,6 @@ from fastapi import APIRouter, Query
 from ..schemas.classifier import CommentsResponse, Comment
 from ..utils.classifier import classifier
 from .utils import filter_comments, order_comments
-from ..utils.logger import logger
 
 api_router = APIRouter()
 
@@ -43,6 +42,5 @@ async def get_comments(subfeddit_id: int,
     filtered_comments = filter_comments(comments, start_time=start_time, end_time=end_time)
     comments = classifier.classify(filtered_comments)
     comments = order_comments(comments, order_by=order_by)
-    logger.exception(msg="Hi")
 
     return CommentsResponse(subfeddit_id=subfeddit_id, skip=skip, limit=limit, comments=comments)
