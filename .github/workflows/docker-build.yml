@@ -5,22 +5,26 @@ on:
   workflow_dispatch:
     branches: [ "main" ]
 jobs:
+
+  pylint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: install pylint
+        run: pip install pylint
+      - name: Linter
+        run: cd classifier-app && pylint .
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: Build
       run: tag=$(date +%s) && docker build ./classifier-app/app --file classifier-app/app/docker/app/Dockerfile --tag comments-classifier:$tag --tag comments-classifier:latest
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build
-        run: docker run -it comments-classifier:latest pytest
+    - name: Test
+      run: docker run -it comments-classifier:latest pytest
   deploy:
     runs-on: ubuntu-latest
-    needs: [build, test]
+    needs: [build]
     steps:
       - uses: actions/checkout@v4
       - name: Deploy
