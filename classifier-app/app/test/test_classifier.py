@@ -20,7 +20,9 @@ class TestClassifierAPI:
                                          feddit_comments_json,
                                          feddit_comments_classification_objects):
         assert mock_feddit_get.return_value.json() == feddit_comments_json
-        filtered_comments = filter_comments(feddit_comments_objects, start_time=self.start_time, end_time=self.end_time)
+        filtered_comments = filter_comments(feddit_comments_objects,
+                                            start_time=self.start_time,
+                                            end_time=self.end_time)
         comments = classifier.classify(filtered_comments)
         comments = order_comments(comments, order_by=None)
         assert comments == feddit_comments_classification_objects

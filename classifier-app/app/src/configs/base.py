@@ -1,6 +1,6 @@
 from pathlib import Path
 from typing import Dict
-from pydantic import BaseModel, AnyHttpUrl, BaseSettings, validator, PostgresDsn
+from pydantic import BaseModel, BaseSettings
 
 
 class LoggingConfig(BaseModel):
